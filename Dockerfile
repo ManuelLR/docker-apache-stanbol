@@ -14,13 +14,17 @@ ENV JAVA_OPTS="-Xmx1g -XX:MaxPermSize=256m"
 
 # Download Stanbol.
 RUN mkdir -p /opt && \
-  wget -nv --output-document=/opt/stanbol-launcher.tar.gz http://ftp.cixug.es/apache/stanbol/apache-stanbol-1.0.0-source-release.tar.gz && cd /opt/ && tar -xzvf stanbol-launcher.tar.gz && cd apache-stanbol-*
+  wget -nv --output-document=/opt/stanbol-launcher.tar.gz http://ftp.cixug.es/apache/stanbol/apache-stanbol-1.0.0-source-release.tar.gz && cd /opt/ && \
+  tar -xzvf stanbol-launcher.tar.gz && \
+  cd /opt/apache-stanbol-$stanbol_version/ && \
+  mvn clean install && \
+  cp /opt/apache-stanbol-$stanbol_version/launchers/full/target/org.apache.stanbol.launchers.full-$stanbol_version.jar /opt/full-stanbol-launcher.jar && \
+  rm -rf /opt/apache-stanbol-$stanbol_version/ && \
+  rm -rf /opt/stanbol-launcher.tar.gz
 
-RUN cd /opt/apache-stanbol-$stanbol_version/ && mvn clean install
-# mvn clean install
-# mvn clean compile jar:jar
+# mvn clean install => 13:37 min
+# mvn clean compile jar:jar => 05:11 min [No funciona como debe]
 
-RUN cp /opt/apache-stanbol-$stanbol_version/launchers/full/target/org.apache.stanbol.launchers.full-$stanbol_version.jar /opt/full-stanbol-launcher.jar && rm -rf /opt/apache-stanbol-$stanbol_version/
 
 # Create directory for log files.
 RUN mkdir -p /var/log/supervisord
