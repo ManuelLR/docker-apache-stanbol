@@ -16,10 +16,11 @@ ENV JAVA_OPTS="-Xmx1g -XX:MaxPermSize=256m"
 RUN mkdir -p /opt && \
   wget -nv --output-document=/opt/stanbol-launcher.tar.gz http://ftp.cixug.es/apache/stanbol/apache-stanbol-1.0.0-source-release.tar.gz && cd /opt/ && tar -xzvf stanbol-launcher.tar.gz && cd apache-stanbol-*
 
-RUN ls -alh /opt/apache-stanbol-$stanbol_version/ && cd /opt/apache-stanbol-$stanbol_version/ && mvn clean compile jar:jar
+RUN cd /opt/apache-stanbol-$stanbol_version/ && mvn clean install
 # mvn clean install
+# mvn clean compile jar:jar
 
-RUN ls -alh /opt/apache-stanbol-$stanbol_version/ && cp /opt/apache-stanbol-$stanbol_version/launchers/full/target/org.apache.stanbol.launchers.full-$stanbol_version.jar /opt/full-stanbol-launcher.jar && rm -rf /opt/apache-stanbol-$stanbol_version/
+RUN cp /opt/apache-stanbol-$stanbol_version/launchers/full/target/org.apache.stanbol.launchers.full-$stanbol_version.jar /opt/full-stanbol-launcher.jar && rm -rf /opt/apache-stanbol-$stanbol_version/
 
 # Create directory for log files.
 RUN mkdir -p /var/log/supervisord
